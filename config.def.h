@@ -204,7 +204,7 @@ static char *colors[SchemeLast][4] = {
 /* List of programs to start automatically during startup only. Note that these will not be
  * executed again when doing a restart. */
 static const char *const autostart[] = {
-	"/bin/sh","-c","bin/statusbar/status_updater.sh",NULL,
+	"/bin/sh","-c",".local/bin/statusbar/status_updater.sh",NULL,
 	"st", NULL,
 //	"picom", NULL,
 //	"setbg", NULL, already set in xprofile
@@ -508,7 +508,7 @@ static const char *dmenucmd[] = {
 static const char *spcmd_w[] = {"w", "st", "-n", "spterm (w)", "-g", "120x34", NULL };
 static const char *spcmd_e[] = {"e", "st", "-n", "spterm (e)", "-g", "120x34", NULL };
 static const char *spcmd_r[] = {"r", "st", "-n", "spfm (r)", "-g", "144x41", "-e", "ranger", NULL };
-static const char *statusclickcmd[] = { NULL, "bin/statusbar/statusclick", NULL };
+static const char *statusclickcmd[] = { NULL, ".local/bin/statusbar/statusclick", NULL };
 
 static const char *roficmd[]  = {NULL, "rofi","-show","drun", NULL };
 static const char *web_browser[] = {NULL, "brave", NULL };
@@ -685,7 +685,7 @@ static Key keys[] = {
 
 /* button definitions */
 /* click can be ClkWorkspaceBar, ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
-static const char *rootmenu[] = { NULL, "bin/context_menu/rootmenu", NULL };
+static const char *rootmenu[] = { NULL, ".local/bin/context_menu/rootmenu", NULL };
 
 static Button buttons[] = {
 	/* click                     event mask               button          function          argument */
