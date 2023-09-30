@@ -200,16 +200,22 @@ static char *colors[SchemeLast][4] = {
 	[SchemeFlexSelFloat] = { "#FFF7D4", "#5C415C", "#5C415C", "sel.float" },
 };
 
+
 /* List of programs to start automatically during startup only. Note that these will not be
  * executed again when doing a restart. */
 static const char *const autostart[] = {
+	"/bin/sh","-c","bin/statusbar/status_updater.sh",NULL,
 	"st", NULL,
+//	"picom", NULL,
+//	"setbg", NULL, already set in xprofile
+//	"/bin/sh", "-c","setxkbmap -layout us,ru -variant ,ruu -option 'grp:win_space_toggle,grp:rctrl_switch,lv3:ralt_switch'", NULL,
 	NULL /* terminate */
 };
 
 /* List of programs to start automatically during a restart only. These should usually be short
  * scripts that perform specific operations, e.g. changing a wallpaper. */
 static const char *const autorestart[] = {
+//	"/bin/sh", "-c","setxkbmap -layout us,ru -variant ,ruu -option 'grp:win_space_toggle,grp:rctrl_switch,lv3:ralt_switch'", NULL,
 	NULL /* terminate */
 };
 
@@ -248,19 +254,32 @@ static const Rule clientrules[] = {
 	{ .instance = "spterm (w)", .scratchkey = 'w', .flags = Floating },
 	{ .instance = "spterm (e)", .scratchkey = 'e', .flags = Floating },
 	{ .instance = "spfm (r)", .scratchkey = 'r', .flags = Floating },
-	{ .class = "Gimp", .workspace = "5", .flags = Floating|SwitchWorkspace },
-	{ .class = "firefox", .workspace = "8", .flags = AttachMaster|SwitchWorkspace },
-	{ .class = "Steam", .flags = Floating|Centered },
-	{ .class = "steam_app_", .flags = SteamGame|Floating|Centered },
+	//{ .class = "Gimp", .workspace = "5", .flags = Floating|SwitchWorkspace },
+
+	{ .title  = "YouTube Music", .workspace = "4", .flags = SwitchWorkspace },
+	{ .class = "firefox", .workspace = "2", .flags = AttachMaster|SwitchWorkspace },
+	{ .class = "telegram-desktop", .workspace = "5", .flags = SwitchWorkspace },
+	{ .class = "TelegramDesktop", .workspace = "5", .flags = SwitchWorkspace },
+	{ .class = "discord", .workspace = "5", .flags = SwitchWorkspace },
+	{ .class = "steam", .instance = "steamwebhelper",.title = "Steam", .workspace = "6", .resume = 0 },
+	{ .class = "steam_app_", .workspace = "6", .resume = 1,.flags = SteamGame },
+	{ .class = "steam", .instance = "steamwebhelper", .title = "Список друзів", .workspace = "6", .resume = 0, .flags = Floating },
+	{ .class = "Virt-manager", .workspace = "9", .flags = SwitchWorkspace },
+
+	//{ .class = "steam", .workspace = "6", .flags = SwitchWorkspace|Floating|Centered },
+	//{ .class = "steam_app_", .workspace = "6",.flags = SteamGame|Floating|Centered },
 	{ .class = "Google-chrome", .role = "GtkFileChooserDialog", .floatpos = "50% 50%", .flags = AlwaysOnTop|Floating },
+	{ .class = "brave", .role = "GtkFileChooserDialog", .floatpos = "50% 50%", .flags = AlwaysOnTop|Floating },
 	{ .role = "pop-up", .flags = AlwaysOnTop|Floating|Centered },
-	{ .role = "browser", .workspace = "8", .flags = AttachBelow|OnlyModButtons|SwitchWorkspace },
+	{ .role = "browser", .workspace = "2", .flags = AttachBelow|OnlyModButtons|SwitchWorkspace },
 	{ .class = "Gnome-terminal", .role = "gnome-terminal-preferences", .flags = Centered },
 	{ .class = "Diffuse", .workspace = "4", .flags = NoSwallow|SwitchWorkspace|RevertWorkspace },
 	{ .class = "File-roller", .workspace = "9", .flags = Centered|Floating|SwitchWorkspace|RevertWorkspace },
 	{ .class = "Alacritty", .flags = Terminal },
 	{ .class = "st-256color", .flags = Terminal|AttachBottom },
+	{ .class = "st", .flags = Terminal|AttachBottom },
 	{ .class = "XTerm", .flags = Terminal },
+	{ .class = "kitty", .flags = Terminal },
 	{ .class = "Xephyr", .flags = NoSwallow|Floating|Centered },
 	{ .title = "Event Tester", .flags = NoSwallow },
 };
@@ -349,7 +368,7 @@ static const BarRule barrules[] = {
 	{ -1,       0,     0,       0,   0,   PWRL,  BAR_ALIGN_LEFT,         size_powerline,           draw_powerline,          NULL,                     NULL,                     "powerline join" },
 	{ -1,       0,     5,       0,   0,   0,     BAR_ALIGN_LEFT,         size_ltsymbol,            draw_ltsymbol,           click_ltsymbol,           NULL,                     "layout" },
 	{ -1,       0,     0,       0,   0,   PWRL,  BAR_ALIGN_LEFT,         size_powerline,           draw_powerline,          NULL,                     NULL,                     "powerline join" },
-	{  0,       0,     0,       5,   5,   0,     BAR_ALIGN_RIGHT,        size_status,              draw_status,             click_status,             NULL,                     "status0" },
+	{  0,       0,     0,       5,   5,   0,     BAR_ALIGN_RIGHT,        size_status,              draw_status,             click_status,             NULL,                     "clock" },
 	{  0,       0,     0,       0,   0,   PWRL,  BAR_ALIGN_RIGHT,        size_powerline,           draw_powerline,          NULL,                     NULL,                     "powerline join" },
 	{  0,       0,     0,       5,   5,   1,     BAR_ALIGN_RIGHT,        size_status,              draw_status,             click_status,             NULL,                     "status1" },
 	{  0,       0,     0,       0,   0,   PWRL,  BAR_ALIGN_RIGHT,        size_powerline,           draw_powerline,          NULL,                     NULL,                     "powerline join" },
@@ -418,6 +437,7 @@ static const Layout layouts[] = {
 	/* symbol     arrange function, { nmaster, nstack, layout, master axis, stack axis, secondary stack axis, symbol func }, name */
 	{ "[]=",      flextile,         { -1, -1, SPLIT_VERTICAL, TOP_TO_BOTTOM, TOP_TO_BOTTOM, 0, NULL }, "tile" },
 	{ "|||",      flextile,         { -1, -1, NO_SPLIT, LEFT_TO_RIGHT, LEFT_TO_RIGHT, 0, NULL }, "columns" },
+	{ "[]#",      flextile,         { -1, -1, SPLIT_VERTICAL, TOP_TO_BOTTOM, GAPPLESSGRID_CFACTS, 0, NULL }, "tstackgrid" },
 	{ "===",      flextile,         { -1, -1, NO_SPLIT, TOP_TO_BOTTOM, TOP_TO_BOTTOM, 0, NULL }, "rows" },
 	{ "[M]",      flextile,         { -1, -1, NO_SPLIT, MONOCLE, MONOCLE, 0, NULL }, "monocle" },
 	{ "||=",      flextile,         { -1, -1, SPLIT_VERTICAL, LEFT_TO_RIGHT, TOP_TO_BOTTOM, 0, NULL }, "col" },
@@ -469,11 +489,12 @@ static const Layout layouts[] = {
 	{ KeyPress,   MOD, XK_z, ACTION, {.i = LASTTILED } },
 
 /* Helper macros for spawning commands */
-#define SHCMD(cmd) { .v = (const char*[]){ NULL, "/bin/sh", "-c", cmd, NULL } }
-#define CMD(...)   { .v = (const char*[]){ NULL, __VA_ARGS__, NULL } }
+// #define SHCMD(cmd) { .v = (const char*[]){ NULL, "/bin/sh", "-c", cmd, NULL } }
+// #define CMD(...)   { .v = (const char*[]){ NULL, __VA_ARGS__, NULL } }
 
 /* Scratch/Spawn commands:        NULL (scratchkey), command, argument, argument, ..., NULL */
-static const char *termcmd[]  = { NULL, "st", NULL };
+//static const char *termcmd[]  = { NULL, "st", NULL };
+static const char *termcmd[]  = { NULL,"kitty", "--hold", "cat", "/home/lzhecz/.cache/wal/sequences", NULL };
 static const char *dmenucmd[] = {
 	NULL,
 	"dmenu_run",
@@ -487,10 +508,32 @@ static const char *dmenucmd[] = {
 static const char *spcmd_w[] = {"w", "st", "-n", "spterm (w)", "-g", "120x34", NULL };
 static const char *spcmd_e[] = {"e", "st", "-n", "spterm (e)", "-g", "120x34", NULL };
 static const char *spcmd_r[] = {"r", "st", "-n", "spfm (r)", "-g", "144x41", "-e", "ranger", NULL };
-static const char *statusclickcmd[] = { NULL, "bin/statusbar/statusclick.sh", NULL };
+static const char *statusclickcmd[] = { NULL, "bin/statusbar/statusclick", NULL };
+
+static const char *roficmd[]  = {NULL, "rofi","-show","drun", NULL };
+static const char *web_browser[] = {NULL, "brave", NULL };
+static const char *file_manager[] = {NULL, "pcmanfm", NULL };
+static const char *theme_selector[] = {NULL, "them2.sh", NULL };
+static const char *fullscreenshot[] = { NULL, "screenshot",  NULL };
+static const char *activescreenshot[] = { NULL, "screenshot", "window", NULL };
+static const char *selectscreenshot[] = { NULL, "screenshot", "select", NULL };
+
+
+//static const char screenshotcmd[]  = "maim --select | tee ~/Pictures/ss/$(date +%s).png | xclip -selection clipboard -t image/png";
+//SHCMD(screenshotcmd)
 
 static Key keys[] = {
 	/* type       modifier                      key              function                argument */
+	{ KeyPress,   Alt,                       	XK_space,        spawn,                  {.v = roficmd } }, // spawn rofi for launching other programs
+	{ KeyPress,   MODKEY,                       XK_w,            spawn,                  {.v = web_browser } }, // spawn web browser
+	{ KeyPress,   MODKEY,                       XK_e,            spawn,                  {.v = file_manager } }, // spawn file manager
+	{ KeyPress,   MODKEY,                       XK_t,            spawn,                  {.v = theme_selector } }, // spawn theme selector
+
+	{ KeyPress,   0,                       	    XK_Print,        spawn,                  {.v = fullscreenshot } }, // 
+	{ KeyPress,   Alt,                          XK_Print,        spawn,                  {.v = activescreenshot } }, // 
+	{ KeyPress,   MODKEY|Shift,                 XK_s,            spawn,                  {.v = selectscreenshot } }, // 
+	{ KeyPress,   Ctrl,                         XK_Print,        spawn,                  {.v = selectscreenshot } }, // 
+	
 	{ KeyPress,   MODKEY,                       XK_d,            spawn,                  {.v = dmenucmd } }, // spawn dmenu for launching other programs
 	{ KeyPress,   MODKEY,                       XK_Return,       spawn,                  {.v = termcmd } }, // spawn a terminal
 	{ KeyPress,   MODKEY|Shift,                 XK_Return,       riospawn,               {.v = termcmd } }, // draw/spawn a terminal
@@ -504,26 +547,30 @@ static Key keys[] = {
 	{ KeyPress,   MODKEY,                       XK_Right,        focusdir,               {.i = 1 } }, // focus on the client right of the currently focused client
 	{ KeyPress,   MODKEY,                       XK_Up,           focusdir,               {.i = 2 } }, // focus on the client above the currently focused client
 	{ KeyPress,   MODKEY,                       XK_Down,         focusdir,               {.i = 3 } }, // focus on the client below the currently focused client
-	{ KeyPress,   MODKEY|Ctrl,                  XK_Left,         placedir,               {.i = 0 } }, // swap places with the client window on the immediate left of the current client
-	{ KeyPress,   MODKEY|Ctrl,                  XK_Right,        placedir,               {.i = 1 } }, // swap places with the client window on the immediate right of the current client
-	{ KeyPress,   MODKEY|Ctrl,                  XK_Up,           placedir,               {.i = 2 } }, // swap places with the client window on the immediate up of the current client
-	{ KeyPress,   MODKEY|Ctrl,                  XK_Down,         placedir,               {.i = 3 } }, // swap places with the client window on the immediate down of the current client
+	{ KeyPress,   MODKEY|Shift,                  XK_Left,         placedir,               {.i = 0 } }, // swap places with the client window on the immediate left of the current client
+	{ KeyPress,   MODKEY|Shift,                  XK_Right,        placedir,               {.i = 1 } }, // swap places with the client window on the immediate right of the current client
+	{ KeyPress,   MODKEY|Shift,                  XK_Up,           placedir,               {.i = 2 } }, // swap places with the client window on the immediate up of the current client
+	{ KeyPress,   MODKEY|Shift,                  XK_Down,         placedir,               {.i = 3 } }, // swap places with the client window on the immediate down of the current client
 
-	{ KeyPress,   MODKEY|Ctrl,                  XK_j,            pushdown,               {0} }, // move the selected client down the stack
-	{ KeyPress,   MODKEY|Ctrl,                  XK_k,            pushup,                 {0} }, // move the selected client up the stack
+	{ KeyPress,   MODKEY|Shift,                  XK_j,            pushdown,               {0} }, // move the selected client down the stack
+	{ KeyPress,   MODKEY|Shift,                  XK_k,            pushup,                 {0} }, // move the selected client up the stack
 	{ KeyPress,   MODKEY,                       XK_i,            incnmaster,             {.i = +1 } }, // increase the number of clients in the master area
 	{ KeyPress,   MODKEY,                       XK_u,            incnmaster,             {.i = -1 } }, // decrease the number of clients in the master area
 	{ KeyPress,   MODKEY|Ctrl,                  XK_i,            incnstack,              {.i = +1 } }, // increase the number of clients in the primary (first) stack area
 	{ KeyPress,   MODKEY|Ctrl,                  XK_u,            incnstack,              {.i = -1 } }, // increase the number of clients in the primary (first) stack area
 	{ KeyPress,   MODKEY,                       XK_h,            setmfact,               {.f = -0.05} }, // decrease the size of the master area compared to the stack area(s)
 	{ KeyPress,   MODKEY,                       XK_l,            setmfact,               {.f = +0.05} }, // increase the size of the master area compared to the stack area(s)
-	{ KeyPress,   MODKEY|Shift,                 XK_h,            setcfact,               {.f = +0.25} }, // increase size respective to other windows within the same area
-	{ KeyPress,   MODKEY|Shift,                 XK_l,            setcfact,               {.f = -0.25} }, // decrease client size respective to other windows within the same area
-	{ KeyPress,   MODKEY|Shift,                 XK_o,            setcfact,               {0} },
+	{ KeyPress,   MODKEY|Ctrl,                       XK_Left,            setmfact,               {.f = -0.05} }, // decrease the size of the master area compared to the stack area(s)
+	{ KeyPress,   MODKEY|Ctrl,                       XK_Right,            setmfact,               {.f = +0.05} }, // increase the size of the master area compared to the stack area(s)
+	{ KeyPress,   MODKEY|Ctrl,                 XK_h,            setcfact,               {.f = +0.25} }, // increase size respective to other windows within the same area
+	{ KeyPress,   MODKEY|Ctrl,                 XK_l,            setcfact,               {.f = -0.25} }, // decrease client size respective to other windows within the same area
+	{ KeyPress,   MODKEY|Ctrl,                 XK_Up,            setcfact,               {.f = +0.25} }, // increase size respective to other windows within the same area
+	{ KeyPress,   MODKEY|Ctrl,                 XK_Down,            setcfact,               {.f = -0.25} }, // decrease client size respective to other windows within the same area
+	{ KeyPress,   MODKEY|Ctrl,                 XK_o,            setcfact,               {0} },
 
 	{ KeyPress,   MODKEY,                       XK_backslash,    togglepinnedws,         {0} }, // toggle pinning of currently selected workspace on the current monitor
 	{ KeyPress,   MODKEY,                       XK_z,            showhideclient,         {0} }, // hide the currently selected client (or show if hidden)
-	{ KeyPress,   MODKEY,                       XK_q,            killclient,             {0} }, // close the currently focused window
+	{ KeyPress,   MODKEY|Shift,                       XK_c,            killclient,             {0} }, // close the currently focused window
 	{ KeyPress,   MODKEY|Shift,                 XK_q,            restart,                {0} }, // restart dusk
 	{ KeyPress,   MODKEY|Ctrl|Alt,              XK_q,            quit,                   {0} }, // exit dusk
 
@@ -547,12 +594,12 @@ static Key keys[] = {
 	{ KeyPress,   MODKEY|Ctrl,                  XK_bracketright, rotatelayoutaxis,       {.i = +4 } }, // cycle through the available tiling arrangements for the secondary stack area
 	{ KeyPress,   MODKEY|Ctrl,                  XK_m,            mirrorlayout,           {0} }, // flip the master and stack areas
 	{ KeyPress,   MODKEY|Ctrl|Shift,            XK_m,            layoutconvert,          {0} }, // flip between horizontal and vertical layout
-	{ KeyPress,   MODKEY,                       XK_space,        setlayout,              {-1} }, // toggles between current and previous layout
+	{ KeyPress,   MODKEY|Ctrl,                       XK_space,        setlayout,              {-1} }, // toggles between current and previous layout
 
 	{ KeyPress,   MODKEY|Ctrl,                  XK_g,            floatpos,               {.v = "50% 50% 80% 80%" } }, // center client and take up 80% of the screen
-	{ KeyPress,   MODKEY,                       XK_g,            togglefloating,         {0} }, // toggles between tiled and floating arrangement for the currently focused client
+	{ KeyPress,   MODKEY|Shift,                       XK_f,            togglefloating,         {0} }, // toggles between tiled and floating arrangement for the currently focused client
 	{ KeyPress,   MODKEY,                       XK_f,            togglefullscreen,       {0} }, // toggles fullscreen for the currently selected client
-	{ KeyPress,   MODKEY|Shift,                 XK_f,            togglefakefullscreen,   {0} }, // toggles "fake" fullscreen for the selected window
+	{ KeyPress,   MODKEY|Alt,                 XK_f,            togglefakefullscreen,   {0} }, // toggles "fake" fullscreen for the selected window
 	{ KeyPress,   Ctrl|Alt,                     XK_Tab,          togglenomodbuttons,     {0} }, // disables / enables keybindings that are not accompanied by any modifier buttons for a client
 	{ KeyPress,   MODKEY|Shift,                 XK_equal,        changeopacity,          {.f = +0.05 } }, // increase the client opacity (for compositors that support _NET_WM_OPACITY)
 	{ KeyPress,   MODKEY|Shift,                 XK_minus,        changeopacity,          {.f = -0.05 } }, // decrease the client opacity (for compositors that support _NET_WM_OPACITY)
@@ -579,9 +626,9 @@ static Key keys[] = {
 //	STACKKEYS(AltGr|Ctrl|Shift,                                  stackpush)                            // move the currently focused client to the nth place in the stack
 //	STACKKEYS(AltGr|Shift,                                       stackswap)                            // swap the currently focused client with the nth client in the stack
 
-	SCRATCHKEYS(MODKEY,                         XK_w,            spcmd_w)
-	SCRATCHKEYS(MODKEY,                         XK_e,            spcmd_e)
-	SCRATCHKEYS(MODKEY,                         XK_r,            spcmd_r)
+	SCRATCHKEYS(MODKEY|Shift,                         XK_w,            spcmd_w)
+	SCRATCHKEYS(MODKEY|Shift,                         XK_e,            spcmd_e)
+	SCRATCHKEYS(MODKEY|Shift,                         XK_r,            spcmd_r)
 
 	WSKEYS(MODKEY,                              XK_1,            "1")
 	WSKEYS(MODKEY,                              XK_2,            "2")
@@ -638,8 +685,11 @@ static Key keys[] = {
 
 /* button definitions */
 /* click can be ClkWorkspaceBar, ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
+static const char *rootmenu[] = { NULL, "bin/context_menu/rootmenu", NULL };
+
 static Button buttons[] = {
 	/* click                     event mask               button          function          argument */
+	{ ClkRootWin,                0,                       Button3,        spawn,            {.v = rootmenu } },
 	{ ClkLtSymbol,               0,                       Button1,        setlayout,        {-1} }, // toggles between current and previous layout
 	{ ClkLtSymbol,               0,                       Button4,        cyclelayout,      {.i = +1 } }, // cycle through the available layouts
 	{ ClkLtSymbol,               0,                       Button5,        cyclelayout,      {.i = -1 } }, // cycle through the available layouts (in reverse)
