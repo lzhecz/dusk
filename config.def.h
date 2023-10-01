@@ -205,7 +205,7 @@ static char *colors[SchemeLast][4] = {
  * executed again when doing a restart. */
 static const char *const autostart[] = {
 	"/bin/sh","-c",".local/bin/statusbar/status_updater.sh",NULL,
-	"st", NULL,
+	"kitty", NULL,
 //	"picom", NULL,
 //	"setbg", NULL, already set in xprofile
 //	"/bin/sh", "-c","setxkbmap -layout us,ru -variant ,ruu -option 'grp:win_space_toggle,grp:rctrl_switch,lv3:ralt_switch'", NULL,
