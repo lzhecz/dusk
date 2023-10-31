@@ -153,7 +153,7 @@ enum {
 	SchemeFlexActFloat,
 	SchemeFlexInaFloat,
 	SchemeFlexSelFloat,
-	SchemeLast, // leave this as the last item, mmmkay
+	SchemeLast,
 }; /* color schemes */
 
 enum {
@@ -167,10 +167,10 @@ enum {
 }; /* clicks */
 
 enum {
-	LAYOUT,       // controls overall layout arrangement / split
-	MASTER,       // indicates the tile arrangement for the master area
-	STACK,        // indicates the tile arrangement for the stack area
-	STACK2,       // indicates the tile arrangement for the secondary stack area
+	LAYOUT,       /* controls overall layout arrangement / split */
+	MASTER,       /* indicates the tile arrangement for the master area */
+	STACK,        /* indicates the tile arrangement for the stack area */
+	STACK2,       /* indicates the tile arrangement for the secondary stack area */
 	LTAXIS_LAST,
 }; /* named flextile constants */
 
@@ -197,17 +197,17 @@ typedef struct Client Client;
 struct Client {
 	char name[256];
 	char label[32];
-	char iconpath[256]; /* maximum file path length under linux is 4096 bytes */
+	char iconpath[256];  /* maximum file path length under linux is 4096 bytes */
 	float mina, maxa;
 	float cfact;
 	int x, y, w, h;
-	int sfx, sfy, sfw, sfh; /* stored float geometry, used on mode revert */
+	int sfx, sfy, sfw, sfh;  /* stored float geometry, used on mode revert */
 	int oldx, oldy, oldw, oldh;
 	int basew, baseh, incw, inch, maxw, maxh, minw, minh;
 	int bw, oldbw;
 	int group;
-	int area; /* arrangement area (master, stack, secondary stack) */
-	int arr;  /* tile arrangement (left to right, top to bottom, etc.) */
+	int area;  /* arrangement area (master, stack, secondary stack) */
+	int arr;   /* tile arrangement (left to right, top to bottom, etc.) */
 	int scheme;
 	char scratchkey;
 	char swallowkey;
@@ -220,7 +220,7 @@ struct Client {
 	Client *swallowing;
 	Client *linked;
 	Workspace *ws;
-	Workspace *revertws; /* holds the original workspace info from when the client was opened */
+	Workspace *revertws;  /* holds the original workspace info from when the client was opened */
 	Window win;
 	unsigned int icw, ich;
 	Picture icon;
@@ -240,9 +240,9 @@ typedef struct {
 	int nmaster;
 	int nstack;
 	int layout;
-	int masteraxis; // master stack area
-	int stack1axis; // primary stack area
-	int stack2axis; // secondary stack area, e.g. centered master
+	int masteraxis;  /* master stack area */
+	int stack1axis;  /* primary stack area */
+	int stack2axis;  /* secondary stack area, e.g. centered master */
 	void (*symbolfunc)(Workspace *, unsigned int);
 } LayoutPreset;
 
@@ -263,6 +263,7 @@ struct Monitor {
 	int gappoh;           /* horizontal outer gaps */
 	int gappov;           /* vertical outer gaps */
 	int showbar;
+	int orientation;      /* screen orientation: 0 = Horizontal, 1 = Vertical */
 	uint64_t wsmask;
 	uint64_t prevwsmask;
 	unsigned int borderpx;
@@ -292,7 +293,7 @@ typedef struct {
 } Rule;
 
 struct Workspace {
-	int wx, wy, ww, wh; /* workspace area */
+	int wx, wy, ww, wh;  /* workspace area */
 	char ltsymbol[64];
 	char name[16];
 	float mfact;
@@ -303,8 +304,9 @@ struct Workspace {
 	int nmaster;
 	int enablegaps;
 	int visible;
+	int orientation;
 	int num;
-	int pinned; // whether workspace is pinned to assigned monitor or not
+	int pinned;  /* whether workspace is pinned to assigned monitor or not */
 	Client *clients;
 	Client *sel;
 	Client *stack;
@@ -314,9 +316,9 @@ struct Workspace {
 	Pixmap preview;
 	const Layout *layout;
 	const Layout *prevlayout;
-	char *icondef; // default icon
-	char *iconvac; // vacant icon (when workspace is selected, default is empty, and no clients)
-	char *iconocc; // when workspace has clients
+	char *icondef;  /* default icon */
+	char *iconvac;  /* vacant icon (when workspace is selected, default is empty, and no clients) */
+	char *iconocc;  /* when workspace has clients */
 };
 
 typedef struct {
@@ -595,7 +597,7 @@ applyrules(Client *c)
 					r->workspace,
 					r->label ? r->label : "NULL");
 			if (!r->resume)
-				break; // only allow one rule match
+				break; /* only allow one rule match */
 		}
 	}
 
@@ -772,7 +774,7 @@ applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact)
 			*w -= c->basew;
 			*h -= c->baseh;
 		}
-		/* adjust for aspect limits */
+		/* adjust for aspect ratio limits */
 		if (c->mina > 0 && c->maxa > 0) {
 			if (c->maxa < (float)*w / *h)
 				*w = *h * c->maxa + 0.5;
@@ -1007,17 +1009,22 @@ cleanupmon(Monitor *mon)
 		for (m = mons; m && m->next != mon; m = m->next);
 		m->next = mon->next;
 	}
+
 	for (ws = workspaces; ws; ws = ws->next) {
-		if (ws->mon == mon) {
-			adjustwsformonitor(ws, mons);
+		if (ws->mon != mon || !mons)
+			continue;
+
+		if (ws == stickyws) {
 			ws->mon = mons;
-			if (ws != stickyws) {
-				ws->visible = 0;
-				ws->pinned = 0;
-				hidewsclients(ws->stack);
-			}
+			continue;
 		}
+
+		assignworkspacetomonitor(ws, mons);
+		ws->visible = 0;
+		ws->pinned = 0;
+		hidewsclients(ws->stack);
 	}
+
 	for (bar = mon->bar; bar; bar = mon->bar) {
 		if (!bar->external) {
 			XUnmapWindow(dpy, bar->win);
@@ -2274,7 +2281,7 @@ manage(Window w, XWindowAttributes *wa)
 		/* Do not let the swallowing client steal focus unless the terminal has focus */
 		focusclient = (term == selws->sel);
 	} else {
-		attachx(c, 0, NULL);
+		attachx(c, AttachDefault, NULL);
 
 		if (focusclient || !c->ws->sel || !c->ws->stack)
 			attachstack(c);
@@ -3140,8 +3147,6 @@ setup(void)
 	root = RootWindow(dpy, screen);
 	xinitvisual();
 	drw = drw_create(dpy, screen, root, sw, sh, visual, depth, cmap);
-	if (!drw_fontset_create(drw, fonts, LENGTH(fonts)))
-		die("no fonts could be loaded.");
 
 	/* init appearance */
 	scheme = ecalloc(LENGTH(colors) + 1, sizeof(Clr *));
@@ -3152,6 +3157,9 @@ setup(void)
 
 	if (enabled(Xresources))
 		loadxrdb();
+
+	if (!drw_fontset_create(drw, fonts, LENGTH(fonts)))
+		die("no fonts could be loaded.");
 
 	lrpad = drw->fonts->h + horizpadbar;
 	bh = bar_height ? bar_height : drw->fonts->h + vertpadbar;
@@ -3681,11 +3689,15 @@ updategeom(int width, int height)
 				m->my = m->wy = unique[m->num].y_org;
 				m->mw = m->ww = unique[m->num].width;
 				m->mh = m->wh = unique[m->num].height;
+				m->orientation = (m->mw < m->mh);
 				updatebarpos(m);
 			}
-			if (m->num >= n)
-				redistributeworkspaces(m);
 		}
+
+		reorientworkspaces();
+
+		if (n < nn)
+			redistributeworkspaces();
 
 		for (i = nn; i < n; i++) {
 			for (m = mons; m && m->next; m = m->next);
@@ -3693,6 +3705,9 @@ updategeom(int width, int height)
 				selmon = mons;
 			cleanupmon(m);
 		}
+
+		reviewworkspaces();
+
 		free(unique);
 	} else
 #endif /* XINERAMA */
@@ -3703,6 +3718,7 @@ updategeom(int width, int height)
 			dirty = 1;
 			mons->mw = mons->ww = sw;
 			mons->mh = mons->wh = sh;
+			mons->orientation = (mons->mw < mons->mh);
 			updatebarpos(mons);
 		}
 	}
