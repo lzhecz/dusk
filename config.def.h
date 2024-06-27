@@ -168,15 +168,11 @@ static char *colors[SchemeLast][4] = {
 /* List of programs to start automatically during startup only. Note that these will not be
  * executed again when doing a restart. */
 static const char *const autostart[] = {
-<<<<<<< HEAD
 	"/bin/sh","-c",".local/bin/statusbar/status_updater.sh",NULL,
 	"kitty", NULL,
 //	"picom", NULL,
 //	"setbg", NULL, already set in xprofile
 //	"/bin/sh", "-c","setxkbmap -layout us,ru -variant ,ruu -option 'grp:win_space_toggle,grp:rctrl_switch,lv3:ralt_switch'", NULL,
-=======
-//	"st", NULL,
->>>>>>> upstream/master
 	NULL /* terminate */
 };
 
@@ -231,7 +227,7 @@ static const Rule clientrules[] = {
 	{ .class = "discord", .workspace = "5", .flags = SwitchWorkspace },
 	{ .class = "steam", .instance = "steamwebhelper",.title = "Steam", .workspace = "6", .resume = 0 },
 	{ .class = "steam_app_", .workspace = "6", .resume = 1,.flags = SteamGame },
-	{ .class = "steam", .instance = "steamwebhelper", .title = "Список друзів", .workspace = "6", .resume = 0, .flags = Floating },
+	{ .class = "steam", .instance = "steamwebhelper", .title = "Friends List", .workspace = "6", .resume = 0, .flags = Floating },
 	{ .class = "Virt-manager", .workspace = "9", .flags = SwitchWorkspace },
 
 	//{ .class = "steam", .workspace = "6", .flags = SwitchWorkspace|Floating|Centered },
@@ -472,12 +468,9 @@ static const StackerIcon stackericons[] = {
 // #define CMD(...)   { .v = (const char*[]){ NULL, __VA_ARGS__, NULL } }
 
 /* Scratch/Spawn commands:        NULL (scratchkey), command, argument, argument, ..., NULL */
-<<<<<<< HEAD
 //static const char *termcmd[]  = { NULL, "st", NULL };
-static const char *termcmd[]  = { NULL,"kitty", "--hold", "cat", "/home/lzhecz/.cache/wal/sequences", NULL };
-=======
+//static const char *termcmd[]  = { NULL,"kitty", "--hold", "cat", "/home/lzhecz/.cache/wal/sequences", NULL };
 static const char *termcmd[]  = { "st", NULL };
->>>>>>> upstream/master
 static const char *dmenucmd[] = {
 	"dmenu_run",
 	"-fn", dmenufont,
@@ -491,7 +484,6 @@ static const char *dmenucmd[] = {
 static const char *spcmd_w[] = {"w", "st", "-n", "spterm (w)", "-g", "120x34", NULL };
 static const char *spcmd_e[] = {"e", "st", "-n", "spterm (e)", "-g", "120x34", NULL };
 static const char *spcmd_r[] = {"r", "st", "-n", "spfm (r)", "-g", "144x41", "-e", "ranger", NULL };
-<<<<<<< HEAD
 static const char *statusclickcmd[] = { NULL, ".local/bin/statusbar/statusclick", NULL };
 
 static const char *roficmd[]  = {NULL, "rofi","-show","drun", NULL };
@@ -505,9 +497,6 @@ static const char *selectscreenshot[] = { NULL, "screenshot", "select", NULL };
 
 //static const char screenshotcmd[]  = "maim --select | tee ~/Pictures/ss/$(date +%s).png | xclip -selection clipboard -t image/png";
 //SHCMD(screenshotcmd)
-=======
-static const char *statusclickcmd[] = { "~/bin/statusbar/statusclick.sh", NULL };
->>>>>>> upstream/master
 
 static Key keys[] = {
 	/* type       modifier                      key              function                argument */
