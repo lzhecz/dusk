@@ -90,7 +90,7 @@ static uint64_t functionality = 0
 //	|Status2DNoAlpha // option to not use alpha when drawing status2d status
 	|BarBorder // draw a border around the bar
 	|BarPadding // add vertical and side padding as per vertpad and sidepad variables above
-//	|NoBorders // as per the noborder patch, show no border when only one client in tiled mode
+	|NoBorders // as per the noborder patch, show no border when only one client in tiled mode
 //	|Warp // warp cursor to currently focused window
 //	|DecorationHints // omit drawing the window border if the applications asks not to
 //	|FocusedOnTop // allows focused window to stay on top of other windows
@@ -102,7 +102,7 @@ static uint64_t functionality = 0
 	|CenterSizeHintsClients // center tiled clients subject to size hints within their tiled area
 //	|ResizeHints // respect size hints also when windows are tiled
 	|SnapToWindows // snap to windows when moving floating clients
-//	|SortScreens // monitors are numbered from left to right
+	|SortScreens // monitors are numbered from left to right
 //	|ViewOnWs // follow a window to the workspace it is being moved to
 	|Xresources // add support for changing colours via Xresources
 //	|Debug // enables additional debug output
@@ -169,7 +169,7 @@ static char *colors[SchemeLast][4] = {
  * executed again when doing a restart. */
 static const char *const autostart[] = {
 	"/bin/sh","-c",".local/bin/statusbar/status_updater.sh",NULL,
-	"kitty", NULL,
+//	"kitty", NULL,
 //	"picom", NULL,
 //	"setbg", NULL, already set in xprofile
 //	"/bin/sh", "-c","setxkbmap -layout us,ru -variant ,ruu -option 'grp:win_space_toggle,grp:rctrl_switch,lv3:ralt_switch'", NULL,
@@ -228,6 +228,7 @@ static const Rule clientrules[] = {
 	{ .class = "steam", .instance = "steamwebhelper",.title = "Steam", .workspace = "6", .resume = 0 },
 	{ .class = "steam_app_", .workspace = "6", .resume = 1,.flags = SteamGame },
 	{ .class = "steam", .instance = "steamwebhelper", .title = "Friends List", .workspace = "6", .resume = 0, .flags = Floating },
+	{ .class = "steam", .instance = "steamwebhelper", .title = "Steam Big Picture Mode", .workspace = "8", .resume = 0, .flags = FullScreen },
 	{ .class = "Virt-manager", .workspace = "9", .flags = SwitchWorkspace },
 
 	//{ .class = "steam", .workspace = "6", .flags = SwitchWorkspace|Floating|Centered },
@@ -383,12 +384,13 @@ static const WorkspaceRule wsrules[] = {
 	{  "1",   -1,       0,       0,       -1,    -1,       -1,      -1,    SchemeWsNorm,     SchemeWsVisible,  SchemeWsSel,      SchemeWsOcc,      "1",   "",   "[1]", },
 	{  "2",   -1,       0,       0,       -1,    -1,       -1,      -1,    SchemeWsNorm,     SchemeWsVisible,  SchemeWsSel,      SchemeWsOcc,      "2",   "",   "[2]", },
 	{  "3",   -1,       0,       0,       -1,    -1,       -1,      -1,    SchemeWsNorm,     SchemeWsVisible,  SchemeWsSel,      SchemeWsOcc,      "3",   "",   "[3]", },
-	{  "4",   -1,       0,       0,       -1,    -1,       -1,      -1,    SchemeWsNorm,     SchemeWsVisible,  SchemeWsSel,      SchemeWsOcc,      "4",   "",   "[4]", },
+	{  "4",    1,       1,       0,       -1,    -1,       -1,      -1,    SchemeWsNorm,     SchemeWsVisible,  SchemeWsSel,      SchemeWsOcc,      "4",   "",   "[4]", },
 	{  "5",   -1,       0,       0,       -1,    -1,       -1,      -1,    SchemeWsNorm,     SchemeWsVisible,  SchemeWsSel,      SchemeWsOcc,      "5",   "",   "[5]", },
 	{  "6",   -1,       0,       0,       -1,    -1,       -1,      -1,    SchemeWsNorm,     SchemeWsVisible,  SchemeWsSel,      SchemeWsOcc,      "6",   "",   "[6]", },
 	{  "7",   -1,       0,       0,       -1,    -1,       -1,      -1,    SchemeWsNorm,     SchemeWsVisible,  SchemeWsSel,      SchemeWsOcc,      "7",   "",   "[7]", },
 	{  "8",   -1,       0,       0,       -1,    -1,       -1,      -1,    SchemeWsNorm,     SchemeWsVisible,  SchemeWsSel,      SchemeWsOcc,      "8",   "",   "[8]", },
 	{  "9",   -1,       0,       0,       -1,    -1,       -1,      -1,    SchemeWsNorm,     SchemeWsVisible,  SchemeWsSel,      SchemeWsOcc,      "9",   "",   "[9]", },
+	{  "10",   1,       1,       5,       -1,    -1,       -1,      -1,    SchemeWsNorm,     SchemeWsVisible,  SchemeWsSel,      SchemeWsOcc,      "10",   "",   "[10]", },
 };
 
 static const float mfact     = 0.50; /* factor of master area size [0.05..0.95] */
@@ -483,12 +485,12 @@ static const char *dmenucmd[] = {
 };
 static const char *spcmd_w[] = {"w", "st", "-n", "spterm (w)", "-g", "120x34", NULL };
 static const char *spcmd_e[] = {"e", "st", "-n", "spterm (e)", "-g", "120x34", NULL };
-static const char *spcmd_r[] = {"r", "st", "-n", "spfm (r)", "-g", "144x41", "-e", "ranger", NULL };
+static const char *spcmd_r[] = {"r", "st", "-n", "spfm (r)", "-g", "144x41", "-e", "yazi", NULL };
 static const char *statusclickcmd[] = { NULL, ".local/bin/statusbar/statusclick", NULL };
 
 static const char *roficmd[]  = {NULL, "rofi","-show","drun", NULL };
 static const char *web_browser[] = {NULL, "brave", NULL };
-static const char *file_manager[] = {NULL, "pcmanfm", NULL };
+static const char *file_manager[] = {NULL, "thunar", NULL };
 static const char *theme_selector[] = {NULL, "them2.sh", NULL };
 static const char *fullscreenshot[] = { NULL, "screenshot",  NULL };
 static const char *activescreenshot[] = { NULL, "screenshot", "window", NULL };
